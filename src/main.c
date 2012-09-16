@@ -12,8 +12,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <windows.h>
+
 #include <winsock2.h>
+#include <windows.h> //include windows.h _AFTER_ winsock2.h to avoid redefinition issues in VS
 
 /* init winsock */
 void winsock_init() {
