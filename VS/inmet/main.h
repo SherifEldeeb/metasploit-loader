@@ -1,7 +1,7 @@
 #pragma once
 #include <windows.h>
 #include <stdio.h>
-
+#include <string.h>
 
 //Print if debugging ... learned that from meterpreter source code, metasploit.
 #ifndef _DEBUG
@@ -11,4 +11,6 @@
 #endif
 
 // Function prototypes goes here
-LONGLONG SizeFromName(LPCWSTR szFileName);
+LONGLONG SizeFromName(LPCWSTR szFileName);									// Provide a filename, it returns the filesize in bytes.
+int CopyFileToBuffer(LPCWSTR szFileName, char* buffer);						// Copies file contents to buffer
+int PatchString(char* buffer, char* cOriginal, char* cReplacement);			// Search and replace a string in a given buffer.
