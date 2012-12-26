@@ -18,18 +18,22 @@ int wmain(int argc, wchar_t *argv[])
 	// !!! Load from file stuff !!!
 	///////////////////////////////
 	// To be edited when options are added
+
+	wchar_t filename[MAX_PATH] = {0};
 	if(argc == 1)
 	{
-		wchar_t filename[MAX_PATH] = {0};
 		wcscpy_s(filename,argv[0]);
-		bufferSize = CopyFileToBuffer(filename, &buffer);
-		const char Transport[] = "METERPRETER_TRANSPORT_SSL";
-		const char ReplacementTransport[] = "METERPRETER_TRANSPORT_HTTP";
-		//PatchString(buffer, Transport, ReplacementTransport);
-		index = binstrstr(buffer, (int)bufferSize, (BYTE*)Transport, (int)strlen(Transport));
-		PatchString(buffer, ReplacementTransport, index, strlen(ReplacementTransport));
-		printf("[*] Offset found at 0x%08x\n", index);
 	}
+	else { wcscpy_s(filename,argv[1]);
+	}
+
+	bufferSize = CopyFileToBuffer(filename, &buffer);
+	const char Transport[] = "METERPRETER_TRANSPORT_SSL";
+	const char ReplacementTransport[] = "METERPRETER_TRANSPORT_HTTP";
+	//PatchString(buffer, Transport, ReplacementTransport);
+	index = binstrstr(buffer, (int)bufferSize, (BYTE*)Transport, (int)strlen(Transport));
+	PatchString(buffer, ReplacementTransport, index, strlen(ReplacementTransport));
+	printf("[*] Offset found at 0x%08x\n", index);
 
 	return 0;
 }

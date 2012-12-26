@@ -10,7 +10,7 @@ LONGLONG SizeFromName(LPCWSTR szFileName) // Returns a file's size from its file
 	{
 		err = GetLastError();
 		dprintf(L"[-] Invalid file handle! CreateFile() returned : %08x\n", err);
-		//CloseHandle(hfile);
+		CloseHandle(hfile);
 		return -1;
 	}
 
@@ -18,11 +18,11 @@ LONGLONG SizeFromName(LPCWSTR szFileName) // Returns a file's size from its file
 	{
 		err = GetLastError();
 		dprintf(L"[-] Error getting file size! GetFileSizeEx() returned : %08x\n", err);
-		//CloseHandle(hfile);
+		CloseHandle(hfile);
 		return -1;
 	}
 
-	//CloseHandle(hfile); // this will ALWAYS throw an exception if run under a debugger, but good higene if run under "production"
+	CloseHandle(hfile); // this will ALWAYS throw an exception if run under a debugger, but good higene if run under "production"
 	return fileSize.QuadPart; //LARGE_INTEGER is a sruct, QuadPart is the filesize in a 64bit digit... which should cover all file sizes "That's for files >4GB" 
 } 
 
@@ -58,14 +58,14 @@ DWORD CopyFileToBuffer(LPCWSTR szFileName, BYTE** buffer)
 	{
 		err = GetLastError();
 		dprintf(L"[-] Invalid file handle! CreateFile() returned : %08x\n", err);
-		//CloseHandle(hfile);
+		CloseHandle(hfile);
 		return -1;
 	}
 
 	if( FALSE == ReadFile(hfile, *buffer, (DWORD)size-1, NULL, NULL) )
 	{
 		printf("Terminal failure: Unable to read from file.\n");
-		//CloseHandle(hfile);
+		CloseHandle(hfile);
 		return 0;
 	}
 	return (DWORD)size;
@@ -96,7 +96,7 @@ int PatchString(BYTE* buffer, const char* cOriginal, const int index, const int 
 	int counter = 0;
 	for(int i = index; i < (index + NoOfBytes); i++)
 	{
-		if(counter == NoOfBytes) break;
+//		if(counter == NoOfBytes) break;
 		buffer[i] = cOriginal[counter];
 		counter++;
 	}
