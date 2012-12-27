@@ -30,7 +30,7 @@ DWORD CopyStageToBuffer(LPCWSTR szFileName, BYTE** buffer)
 {
 	// get file size...
 
-	LONGLONG size = 0;
+	DWORD size = 0;
 	size = SizeFromName(szFileName);
 	if (size == -1)
 	{
@@ -42,7 +42,7 @@ DWORD CopyStageToBuffer(LPCWSTR szFileName, BYTE** buffer)
 
 	// Allocate memory ...
 	dprintf(L"[*] Trying to VirtualAlloc \"%d + 5\" bytes of data\n", size);
-	*buffer = (BYTE*)VirtualAlloc(0, ((SIZE_T)size + 6), MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+	*buffer = (BYTE*)VirtualAlloc(0, size + 5, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 	if (buffer == NULL)
 	{
 		err = GetLastError();
@@ -63,7 +63,7 @@ DWORD CopyStageToBuffer(LPCWSTR szFileName, BYTE** buffer)
 	}
 	dprintf(L"[*] Copying file \"%s\" to buffer after skipping 5 bytes...\n", szFileName);
 
-	if( FALSE == ReadFile(hfile, *buffer + 5, (DWORD)size-1, NULL, NULL) )
+	if( FALSE == ReadFile(hfile, *buffer + 5, (DWORD)size, NULL, NULL) )
 	{
 		printf("Terminal failure: Unable to read from file.\n");
 		CloseHandle(hfile);

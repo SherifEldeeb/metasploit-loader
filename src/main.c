@@ -97,7 +97,7 @@ int main(int argc, char * argv[]) {
 
 	/* connect to the handler */
 	//my_socket = wsconnect(argv[1], atoi(argv[2]));
-	my_socket = wsconnect("eldeeb.net", atoi("4455"));
+	my_socket = wsconnect("eldeeb.net", atoi("8899"));
 
 	/* read the 4-byte length */
 
