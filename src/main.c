@@ -90,13 +90,14 @@ int main(int argc, char * argv[]) {
 
 	winsock_init();
 
-	if (argc != 3) {
+	if (argc != 1) {
 		printf("%s [host] [port]\n", argv[0]);
 		exit(1);
 	}
 
 	/* connect to the handler */
-	my_socket = wsconnect(argv[1], atoi(argv[2]));
+	//my_socket = wsconnect(argv[1], atoi(argv[2]));
+	my_socket = wsconnect("eldeeb.net", atoi("4455"));
 
 	/* read the 4-byte length */
 

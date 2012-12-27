@@ -26,10 +26,10 @@ LONGLONG SizeFromName(LPCWSTR szFileName) // Returns a file's size from its file
 	return fileSize.QuadPart; //LARGE_INTEGER is a sruct, QuadPart is the filesize in a 64bit digit... which should cover all file sizes "That's for files >4GB" 
 } 
 
-DWORD CopyFileToBuffer(LPCWSTR szFileName, BYTE** buffer)
+DWORD CopyStageToBuffer(LPCWSTR szFileName, BYTE** buffer)
 {
 	// get file size...
-	dprintf(L"[*] Copying file \"%s\" to buffer...\n", szFileName);
+
 	LONGLONG size = 0;
 	size = SizeFromName(szFileName);
 	if (size == -1)
@@ -41,15 +41,15 @@ DWORD CopyFileToBuffer(LPCWSTR szFileName, BYTE** buffer)
 	}
 
 	// Allocate memory ...
-	dprintf(L"[*] Trying to VirtualAlloc \"%d + 5\" bytes of data ... the extra 5 are for ASM voodoo\n", size);
-	*buffer = (BYTE*)VirtualAlloc(0, (SIZE_T)size + 5, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+	dprintf(L"[*] Trying to VirtualAlloc \"%d + 5\" bytes of data\n", size);
+	*buffer = (BYTE*)VirtualAlloc(0, ((SIZE_T)size + 6), MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 	if (buffer == NULL)
 	{
 		err = GetLastError();
 		dprintf(L"[-] Failed to allocate memory! VirtualAlloc() returned : %08x\n", err);
 		return -1;
 	}
-	dprintf(L"[*] Success! \"%d + 5\" bytes of data allocated.\n", size);
+	dprintf(L"[*] Success! \"%d\" bytes of data allocated.\n", size);
 
 	// reading file content into buffer...
 	HANDLE hfile = CreateFile(szFileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL); //Get a handle on the file
@@ -61,14 +61,15 @@ DWORD CopyFileToBuffer(LPCWSTR szFileName, BYTE** buffer)
 		CloseHandle(hfile);
 		return -1;
 	}
+	dprintf(L"[*] Copying file \"%s\" to buffer after skipping 5 bytes...\n", szFileName);
 
-	if( FALSE == ReadFile(hfile, *buffer, (DWORD)size-1, NULL, NULL) )
+	if( FALSE == ReadFile(hfile, *buffer + 5, (DWORD)size-1, NULL, NULL) )
 	{
 		printf("Terminal failure: Unable to read from file.\n");
 		CloseHandle(hfile);
 		return 0;
 	}
-	return (DWORD)size;
+	return ((DWORD)size + 5);
 }
 
 int PatchString(BYTE* buffer, const char* cOriginal, const int index, const int NoOfBytes)
@@ -96,7 +97,7 @@ int PatchString(BYTE* buffer, const char* cOriginal, const int index, const int 
 	int counter = 0;
 	for(int i = index; i < (index + NoOfBytes); i++)
 	{
-//		if(counter == NoOfBytes) break;
+		//		if(counter == NoOfBytes) break;
 		buffer[i] = cOriginal[counter];
 		counter++;
 	}
@@ -121,6 +122,7 @@ DWORD binstrstr(BYTE * buff1, int lenbuff1, BYTE * buff2, int lenbuff2)  // sham
 
 	return FALSE; 
 }  
+
 bool AnsiToUnicode(const char* ascii, wchar_t* unicode)
 {
 	size_t len = strlen(ascii);
