@@ -74,26 +74,6 @@ DWORD CopyStageToBuffer(LPCWSTR szFileName, BYTE** buffer)
 
 int PatchString(BYTE* buffer, const char* cOriginal, const int index, const int NoOfBytes)
 {
-	/*
-	DWORD* pOffset = nullptr;
-	wchar_t UNIcOriginal[1024] = {0}, UNIcReplacement[1024] = {0};
-
-	if(AnsiToUnicode(cOriginal, UNIcOriginal)	&& AnsiToUnicode	(cReplacement, UNIcReplacement))
-	{
-	dprintf(L"[*] Patching buffer: \"%s\" -> \"%s\"...\n", UNIcOriginal, UNIcReplacement);
-	}
-
-
-	//pOffset = strstr(buffer, cOriginal); //strstr doesn't work on binary data ... :/
-	if (pOffset == NULL || pOffset == nullptr)
-	{
-	dprintf(L"[-] Couldn't get the offset of \"%s\" ... it's either not there, or something screwed up.", cOriginal);
-	return 1;
-	}
-	else {
-	dprintf(L"[*] Found \"%s\" at offset \"0x%08x\".", UNIcOriginal, pOffset);
-	}
-	*/
 	int counter = 0;
 	for(int i = index; i < (index + NoOfBytes); i++)
 	{
